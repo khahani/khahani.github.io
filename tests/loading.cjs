@@ -14,6 +14,7 @@ test('initial HTML shows feedback while the application bundle is pending',async
  const {browser,page}=await setup({viewport:{width:320,height:700}});
  try{await page.route('**/static/js/main.*.js',()=>{});await page.goto(url,{waitUntil:'domcontentloaded',timeout:2000}).catch(()=>{});
  assert.equal(await page.locator('#boot-loader').isVisible(),true);
+ assert.equal(await page.locator('#static-portfolio').isVisible(),true);
  assert.match(await page.locator('#boot-message').innerText(),/Loading portfolio/);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  }finally{await browser.close();}
@@ -25,12 +26,14 @@ test('main content becomes usable without waiting for images and secondary data'
  await page.locator('#greeting').waitFor();
  await page.waitForFunction(()=>!document.querySelector('#boot-loader'));
  assert.equal(await page.locator('.splash-container').count(),0);
+ assert.equal(await page.locator('#static-portfolio').count(),0);
+ assert.equal(await page.locator('#root').isVisible(),true);
  }finally{await browser.close();}
 });
 test('failed bundle offers Retry and a successful retry clears the error',async()=>{
  const {browser,page}=await setup();try{
  await page.route('**/static/js/main.*.js',r=>r.abort());await page.goto(url,{waitUntil:'domcontentloaded'});
- await page.locator('#boot-retry').waitFor();assert.match(await page.locator('#boot-message').innerText(),/couldn’t load/i);
+ await page.locator('#boot-retry').waitFor();assert.equal(await page.locator('#static-portfolio').isVisible(),true);assert.match(await page.locator('#boot-message').innerText(),/couldn’t load/i);
  await page.unroute('**/static/js/main.*.js');await page.locator('#boot-retry').click();
  await page.locator('#greeting').waitFor();await page.waitForFunction(()=>!document.querySelector('#boot-loader'));
  }finally{await browser.close();}
@@ -42,8 +45,10 @@ test('slow loading offers Retry but still recovers when the original request com
  await page.goto(url,{waitUntil:'commit'});await page.locator('#boot-loader').waitFor();
  await page.clock.fastForward(15000);await page.locator('#boot-retry').waitFor();
  assert.match(await page.locator('#boot-message').innerText(),/longer than usual/i);
+ assert.equal(await page.locator('#static-portfolio').isVisible(),true);
  release();await page.locator('#greeting').waitFor();await page.waitForFunction(()=>!document.querySelector('#boot-loader'));
  await page.clock.fastForward(30000);assert.equal(await page.locator('#boot-loader').count(),0);
+ assert.equal(await page.locator('#static-portfolio').count(),0);
  }finally{await browser.close();}
 });
 test('JavaScript disabled shows an explanation instead of an endless spinner',async()=>{
@@ -51,6 +56,9 @@ test('JavaScript disabled shows an explanation instead of an endless spinner',as
  await page.goto(url,{waitUntil:'domcontentloaded'});
  assert.equal(await page.locator('#boot-loader').isVisible(),false);
  assert.match(await page.locator('noscript').innerText(),/JavaScript/);
+ assert.equal(await page.locator('#static-portfolio').isVisible(),true);
+ assert.match(await page.locator('#static-portfolio').innerText(),/EasyEyes/);
+ assert.equal(await page.locator('a[href="/projects/easyeyes/"]').first().isVisible(),true);
  }finally{await browser.close();}
 });
 test('required stylesheet failure offers Retry instead of exposing an unstyled page',async()=>{
@@ -58,5 +66,37 @@ test('required stylesheet failure offers Retry instead of exposing an unstyled p
  await page.route('**/static/css/main.*.css',r=>r.abort());await page.goto(url,{waitUntil:'domcontentloaded'});
  await page.locator('#boot-retry').waitFor();assert.equal(await page.locator('#boot-loader').isVisible(),true);
  assert.match(await page.locator('#boot-message').innerText(),/couldn’t load/i);
+ assert.equal(await page.locator('#static-portfolio').isVisible(),true);
+ }finally{await browser.close();}
+});
+for (const width of [320, 1280]) {
+ test(`HTML portfolio and project are readable and linked without JavaScript at ${width}px`,async()=>{
+  const {browser,page}=await setup({javaScriptEnabled:false,viewport:{width,height:800}});
+  try {
+   await page.goto(url,{waitUntil:'domcontentloaded'});
+   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://khahani.com/');
+   const profile=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+   assert.equal(profile.mainEntity.name,'Mohammadreza Khahani');
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+   assert.equal(await page.locator('#static-portfolio h1').isVisible(),true);
+   await page.locator('a[href="/projects/easyeyes/"]').click();
+   assert.match(await page.locator('h1').innerText(),/EasyEyes/);
+   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://khahani.com/projects/easyeyes/');
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+   await page.screenshot({path:`/tmp/portfolio-seo-project-${width}.png`,fullPage:true});
+   await page.locator('nav a[href="/"]').click();
+   assert.equal(await page.locator('#static-portfolio h1').isVisible(),true);
+   await page.screenshot({path:`/tmp/portfolio-seo-summary-${width}.png`,fullPage:true});
+  }finally{await browser.close();}
+ });
+}
+test('enhancement keeps a fresh visitor at the top of the portfolio',async()=>{
+ const {browser,page}=await setup({viewport:{width:1280,height:900}});
+ try {
+  await page.route('**/static/js/main.*.js',async r=>{await new Promise(resolve=>setTimeout(resolve,500));await r.continue();});
+  await page.goto(url,{waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>!document.querySelector('#boot-loader'));
+  await page.evaluate(()=>document.fonts.ready);
+  assert.equal(await page.evaluate(()=>scrollY),0);
  }finally{await browser.close();}
 });
