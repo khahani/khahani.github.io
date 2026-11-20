@@ -9,9 +9,7 @@
 .portfolio-content a{color:#55198b;text-decoration:underline;text-underline-offset:4px}
 .portfolio-content a:focus-visible{outline:3px solid #6c63ff;outline-offset:4px}
 .portfolio-content li{margin:12px 0}
-.portfolio-content footer,.project-feature{border-top:1px solid #ddd}
-.project-feature{margin:32px auto}
-.project-feature h2{margin-top:0}
+.portfolio-content footer{border-top:1px solid #ddd}
 .project-page{margin:0;background:#fff}
 @media(max-width:480px){.portfolio-content{padding:32px 20px;font-size:16px}}
-@media(prefers-color-scheme:dark){.project-page,.portfolio-content{background:#171c28;color:#f5f5f5}.portfolio-content .lead{color:#d3d3da}.portfolio-content a,.portfolio-content .eyebrow{color:#c6b2ff}.portfolio-content footer,.project-feature{border-color:#434756}}
+@media(prefers-color-scheme:dark){.project-page,.portfolio-content{background:#171c28;color:#f5f5f5}.portfolio-content .lead{color:#d3d3da}.portfolio-content a,.portfolio-content .eyebrow{color:#c6b2ff}.portfolio-content footer{border-color:#434756}}

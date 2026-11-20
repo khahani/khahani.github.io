@@ -7,7 +7,7 @@ This repository hosts the published static portfolio on GitHub Pages. It contain
 - `index.html` contains page metadata, canonical URL, ProfilePage/Person JSON-LD, and an HTML portfolio summary. The summary is visible without JavaScript and while the compiled application loads. It is removed only when the React greeting and required styles are ready. This is progressive enhancement with a summary, not full React pre-rendering/hydration.
 - Keep the HTML summary and structured data aligned with future portfolio changes. If rebuilding from the original React source, carry these changes into its HTML template and loading integration first.
 - `projects/easyeyes/index.html` is a standalone, JavaScript-independent project overview. Its claims come from the existing portfolio; add specific implementation evidence and measured results only when verified.
-- `static/css/content.css` styles the summary, permanent homepage project link, and project page.
+- `static/css/content.css` styles the summary and project page.
 - Both pages use the existing 800×800 portrait for social previews and the `summary` Twitter card.
 - `sitemap.xml` lists canonical public content pages. Add new content pages there and link them from the site. Do not add invented `lastmod` timestamps.
 - `robots.txt` allows crawling and advertises the sitemap.

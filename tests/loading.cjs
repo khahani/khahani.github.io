@@ -58,7 +58,7 @@ test('JavaScript disabled shows an explanation instead of an endless spinner',as
  assert.match(await page.locator('noscript').innerText(),/JavaScript/);
  assert.equal(await page.locator('#static-portfolio').isVisible(),true);
  assert.match(await page.locator('#static-portfolio').innerText(),/EasyEyes/);
- assert.equal(await page.locator('a[href="/projects/easyeyes/"]').first().isVisible(),true);
+ assert.equal(await page.locator('.project-feature').count(),0);
  }finally{await browser.close();}
 });
 test('required stylesheet failure offers Retry instead of exposing an unstyled page',async()=>{
@@ -70,7 +70,7 @@ test('required stylesheet failure offers Retry instead of exposing an unstyled p
  }finally{await browser.close();}
 });
 for (const width of [320, 1280]) {
- test(`HTML portfolio and project are readable and linked without JavaScript at ${width}px`,async()=>{
+ test(`HTML portfolio and project are readable without JavaScript at ${width}px`,async()=>{
   const {browser,page}=await setup({javaScriptEnabled:false,viewport:{width,height:800}});
   try {
    await page.goto(url,{waitUntil:'domcontentloaded'});
@@ -79,7 +79,7 @@ for (const width of [320, 1280]) {
    assert.equal(profile.mainEntity.name,'Mohammadreza Khahani');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    assert.equal(await page.locator('#static-portfolio h1').isVisible(),true);
-   await page.locator('a[href="/projects/easyeyes/"]').click();
+   await page.goto(new URL('/projects/easyeyes/',url).href,{waitUntil:'domcontentloaded'});
    assert.match(await page.locator('h1').innerText(),/EasyEyes/);
    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://khahani.com/projects/easyeyes/');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
