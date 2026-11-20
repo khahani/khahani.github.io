@@ -12,6 +12,12 @@ This repository hosts the published static portfolio on GitHub Pages. It contain
 - `sitemap.xml` lists canonical public content pages. Add new content pages there and link them from the site. Do not add invented `lastmod` timestamps.
 - `robots.txt` allows crawling and advertises the sitemap.
 
+## Twitter timeline loading
+
+The compiled main bundle includes a `TwitterPanel` with a 10-second loading deadline. A blocked, rejected, or stalled timeline shows a link to the X profile. Successful loading clears the timer; theme changes mount a fresh panel; callbacks from an unmounted embed are ignored. The timeline wrapper handles rejected promises and uses the correctly cased `onLoad` callback. Carry these changes into the original React source before rebuilding. The bundle filename and HTML/asset manifest references change together for cache invalidation.
+
+`tests/twitter.cjs` exercises the real compiled component with a controlled Twitter API: success, hidden-iframe stall, rejection, blocked script, and late completion after timeout. Live X service availability is outside this local test coverage.
+
 ## Local verification
 
 Serve the repository:
