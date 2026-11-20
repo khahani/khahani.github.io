@@ -14,7 +14,9 @@ test('initial HTML shows feedback while the application bundle is pending',async
  const {browser,page}=await setup({viewport:{width:320,height:700}});
  try{await page.route('**/static/js/main.*.js',()=>{});await page.goto(url,{waitUntil:'domcontentloaded',timeout:2000}).catch(()=>{});
  assert.equal(await page.locator('#boot-loader').isVisible(),true);
- assert.equal(await page.locator('#static-portfolio').isVisible(),true);
+ assert.equal(await page.locator('#static-portfolio').isVisible(),false);
+ assert.equal(await page.locator('.boot-spinner').isVisible(),true);
+ assert.ok((await page.locator('#boot-loader').boundingBox()).height>=700);
  assert.match(await page.locator('#boot-message').innerText(),/Loading portfolio/);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  }finally{await browser.close();}
