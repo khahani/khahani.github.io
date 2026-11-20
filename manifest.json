@@ -1,21 +1,26 @@
 {
-  "short_name": "DeveloperFolio",
-  "name": "DeveloperFolio",
+  "short_name": "Reza Khahani",
+  "name": "Mohammadreza “Reza” Khahani",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "/favicon.ico?v=reza-portrait",
+      "sizes": "16x16 32x32 48x48 64x64",
       "type": "image/x-icon"
     },
     {
-      "src": "/android-chrome-192x192.png?v8=qAJ44G5Bm7",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "/android-chrome-192x192.png?v=reza-portrait",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "/android-chrome-384x384.png?v8=qAJ44G5Bm7",
-      "type": "image/png",
-      "sizes": "384x384"
+      "src": "/android-chrome-384x384.png?v=reza-portrait",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png?v=reza-portrait",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
