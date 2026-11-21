@@ -28,3 +28,6 @@
     width: 224px;
   }
 }
+
+/* Readable secondary text on light backgrounds. */
+.subTitle:not(.dark-mode):not(.dark-mode-text){color:#626b73!important}
